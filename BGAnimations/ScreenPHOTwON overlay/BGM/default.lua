@@ -2,15 +2,17 @@ local bgPref = ThemePrefs.Get("MenuMusic");
 local curIndex = 1;
 local oldIndex = curIndex;
 
+-- Please ensure that Off is always at the end of the list otherwise things will bork. -Sunny
+--Order is as follows: ThemePref name, Display Name, sound file name.
 local frames = {
-  {"Default", "DEFAULT (fz)"},
-  {"saiiko", "saiiko"},
-  {"vortivask", "DJ Vortivask"},
-  {"inori", "Inori"},
-  {"RGTM", "RGTM"},
-  {"fancy cake", "fancy cake!!"},
-  {"leeium", "leeium"},
-  {"SN3", "SuperNOVA3"},
+  {"Default", "DEFAULT (fz)", "Default"},
+  {"saiiko", "saiiko", "sk2_menu2"},
+  {"vortivask", "DJ Vortivask", "djvortivask"},
+  {"inori", "Inori", "inori"},
+  {"RGTM", "RGTM", "128beat"},
+  {"fancy cake", "fancy cake!!", "fancycake"},
+  {"leeium", "leeium", "leeium"},
+  {"SN3", "SuperNOVA3", "SN3"},
   {"Off", "Off"},
 };
 
@@ -20,6 +22,8 @@ local function GetFrame(frames, key)
       return frames[1]
     elseif key == "name" then
       return frames[2]
+    elseif key == "sound" then
+      return frames[3]
     end
   end
 end
@@ -91,6 +95,7 @@ local t = Def.ActorFrame{
 	end;
   ShowBGMCommand=function(self)
     self:stoptweening():linear(0.2):y(_screen.cy)
+    self:queuecommand("MoveScrollerBGM")
   end;
   HideBGMCommand=function(self)
     self:stoptweening():linear(0.2):y(_screen.cy+SCREEN_HEIGHT)
@@ -128,23 +133,11 @@ local t = Def.ActorFrame{
   };
   Def.Actor{
     MoveScrollerBGMMessageCommand=function(self,param)
-      if curIndex == 1 then
-				SOUND:PlayMusicPart(THEME:GetPathS("","MenuMusic/common/Default (loop).ogg"), 0, 130, 0, 0, true)
-			elseif curIndex == 2 then
-        SOUND:PlayMusicPart(THEME:GetPathS("","MenuMusic/common/sk2_menu2 (loop).ogg"), 0, 52.95, 0, 0, true)
-      elseif curIndex == 3 then
-				SOUND:PlayMusicPart(THEME:GetPathS("","MenuMusic/common/djvortivask (loop).ogg"), 0, 25.263, 0, 0, true)
-      elseif curIndex == 4 then
-        SOUND:PlayMusicPart(THEME:GetPathS("","MenuMusic/common/inori (loop).ogg"), 0, 51.217, 0, 0, true)
-      elseif curIndex == 5 then
-        SOUND:PlayMusicPart(THEME:GetPathS("","MenuMusic/common/128beat (loop).ogg"), 0, 60, 0, 0, true)
-      elseif curIndex == 6 then
-        SOUND:PlayMusicPart(THEME:GetPathS("","MenuMusic/common/fancycake (loop).ogg"), 0, 23.9, 0, 0, true)
-      elseif curIndex == 7 then
-        SOUND:PlayMusicPart(THEME:GetPathS("","MenuMusic/common/leeium (loop).ogg"), 0, 32, 0, 0, true)
-      elseif curIndex == 8 then
-        SOUND:PlayMusicPart(THEME:GetPathS("","MenuMusic/common/SN3 (loop).ogg"), 0, 13, 0, 0, true)
-			end
+      if curIndex ~= #frames then
+        SOUND:PlayMusicPart(THEME:GetPathS("","MenuMusic/common/"..GetFrame(frames[curIndex], "sound").." (loop).ogg"),0,-1,0,0,true)
+      else
+        SOUND:PlayMusicPart(THEME:GetPathS("","_silent.ogg"),0,-1,0,0,true)
+      end
 		end;
   };
   Def.ActorFrame{
