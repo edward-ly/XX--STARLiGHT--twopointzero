@@ -44,11 +44,11 @@ for _, pn in ipairs(GAMESTATE:GetEnabledPlayers()) do
 			end,
 		};
 	};
-	t[#t+1] = Def.Sound{
-		File="FullCombo/Combo_Splash",
-		Name="ComboSplash"..ToEnumShortString(pn),
-		SupportPan=true,
-	};
+	-- t[#t+1] = Def.Sound{
+	-- 	File="FullCombo/Combo_Splash",
+	-- 	Name="ComboSplash"..ToEnumShortString(pn),
+	-- 	SupportPan=true,
+	-- };
 end;
 
 return t;

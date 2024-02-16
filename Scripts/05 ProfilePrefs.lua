@@ -13,9 +13,9 @@ ex_score: whether score should be displayed as DDR A EX score
 ]]
 local defaultPrefs =
 {
-	guidelines = false,
+	guidelines = true,
 	character = "",
-	filter = 0,
+	filter = 60,
 	lanes = false,
 	bias = false,
 	stars = 0,
@@ -23,10 +23,10 @@ local defaultPrefs =
 	TowelPos = 0,
 	ex_score = false,
 	exstars = 0,
-	evalpane1 = 2,
+	evalpane1 = 0,
 	evalpane2 = 0,
 	guidelines_top_aligned = false,
-	scorelabel = "profile",
+	scorelabel = "BPM",
 	Judgment = "DEFAULT",
 	Combo = "DEFAULT"
 }

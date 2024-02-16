@@ -169,7 +169,7 @@ local t = Def.ActorFrame{
 						local selection = CHARACTER_MAP[SELECTION_Y][SELECTION_X]
 						if selection == "Enter" then
 							if string.len(name) == 0 then
-								name = "STARLGHT"
+								name = "PLAYER " .. string.sub(params.PlayerNumber, -1)
 							end
 							PROFILEMAN:GetProfile(player):SetDisplayName(name)
 							setenv("keysetSDDRN"..ToEnumShortString(player),1)
