@@ -13,14 +13,33 @@ return Def.ActorFrame{
 		MESSAGEMAN:Broadcast("TitleSelection", {Choice=style})
 	end,
 	Def.Sprite{
-		Texture=THEME:GetPathG("ScreenSelectMode","scroller/"..style),
+		Texture=THEME:GetPathG("ScreenSelectMode","scroller/box"),
+	};
+	Def.BitmapText{
+		Font="_avenirnext lt pro bold/glow/24.ini",
+		InitCommand=function(s)
+			if THEME:HasString("ScreenTitleMenu",style) then
+				s:settext(string.upper(THEME:GetString("ScreenTitleMenu",style)))
+			else
+				s:settext(string.upper(style))
+			end
+			s:DiffuseAndStroke(color("#dff0ff"),color("#00baffDD"))
+		end,
 	};
 	Def.Sprite{
 		Texture="hl",
 		OnCommand=function(s) s:queuecommand("Anim") end,
 		GainFocusCommand=function(s) s:finishtweening():queuecommand("Anim"):diffusealpha(0):linear(0.1):diffusealpha(1) end,
 		LoseFocusCommand=function (s) s:finishtweening():linear(0.1):diffusealpha(0) end,
-		AnimCommand=function(s) s:diffuseramp():effectcolor1(color("1,1,1,0.5")):effectcolor2(color("1,1,1,1")):effectperiod(1) end,
+		AnimCommand=function(s) s:diffuseshift():effectcolor1(color("#00ffffDD")):effectcolor2(color("#00baff55")):effectperiod(1) end,
+	};
+	Def.Sprite{
+		Texture="box",
+		InitCommand=function(s) s:blend(Blend.Add) end,
+		OnCommand=function(s) s:queuecommand("Anim") end,
+		GainFocusCommand=function(s) s:finishtweening():queuecommand("Anim"):diffusealpha(0):linear(0.1):diffusealpha(1) end,
+		LoseFocusCommand=function (s) s:finishtweening():linear(0.1):diffusealpha(0) end,
+		AnimCommand=function(s) s:diffuseshift():effectcolor1(color("#00ffffDD")):effectcolor2(color("#00baff55")):effectperiod(1) end,
 	};
 };
 

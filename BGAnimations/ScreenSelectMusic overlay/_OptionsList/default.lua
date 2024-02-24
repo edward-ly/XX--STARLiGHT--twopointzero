@@ -7,6 +7,10 @@ end
 local currentIndex;
 
 local t= Def.ActorFrame{
+    InitCommand=function(s) s:visible(false) end,
+    OptionsListOpenedMessageCommand=function(s) s:visible(true) end,
+    OptionsListClosedMessageCommand=function(s) s:sleep(0.5):queuecommand("Hide") end,
+    HideCommand=function(s) s:visible(false) end,
     OnCommand=function(s) setenv("OPList",0) end,
     Def.Sound{
         File=THEME:GetPathS("","Codebox/o-change"),
@@ -37,8 +41,8 @@ local t= Def.ActorFrame{
 
 local OPLIST_splitAt = THEME:GetMetric("OptionsList","MaxItemsBeforeSplit")
 local OPLIST_ScrollAt = 8
-local OPTIONSLIST_NUMNOTESKINS = #NOTESKIN:GetNoteSkinNames()
-local OPTIONSLIST_NOTESKINS = NOTESKIN:GetNoteSkinNames()
+local OPTIONSLIST_NUMNOTESKINS = (ThemePrefs.Get("ExclusiveNS") == true and #GetXXSkins() ~= 0) and #GetXXSkins() or #NOTESKIN:GetNoteSkinNames()
+local OPTIONSLIST_NOTESKINS = (ThemePrefs.Get("ExclusiveNS") == true and #GetXXSkins() ~= 0) and GetXXSkins() or NOTESKIN:GetNoteSkinNames()
 
 local fixedNS = OPTIONSLIST_NOTESKINS
 table.insert(fixedNS,"EXIT")
@@ -50,7 +54,7 @@ if #fixedChar > 1 and fixedChar[1] ~= "OFF" then
     if SN3Debug then SCREENMAN:SystemMessage("Found "..#fixedChar.." characters!") end
     table.insert(fixedChar, 2, "RANDOM")
 else
-    if SN3Debug then SCREENMAN:SystemMessage("Found no characters! :<") end
+    --if SN3Debug then SCREENMAN:SystemMessage("Found no characters! :<") end
 end
 table.insert(fixedChar, "EXIT")
 
@@ -641,6 +645,12 @@ if THEME:GetMetric("ScreenSelectMusic","UseOptionsList") then
                         end;
                     end;
                 end;
+                Def.BitmapText{
+                    Condition=ThemePrefs.Get("ExclusiveNS") == true,
+                    Font="_avenirnext lt pro bold/36px",
+                    Text="Exclusive NoteSkins:",
+                    InitCommand=function(s) s:y(-180):maxwidth(500):DiffuseAndStroke(color("#00AAFF"),(color("#0030FF"))) end,
+                };
                 Def.BitmapText{
                     Font="_avenirnext lt pro bold/36px",
                     InitCommand=function(s) s:y(180):maxwidth(500):strokecolor(Color.Black) end,

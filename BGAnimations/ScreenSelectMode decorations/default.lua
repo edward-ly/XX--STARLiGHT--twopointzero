@@ -23,43 +23,6 @@ local t = Def.ActorFrame{
 	}
 }
 
-t[#t+1] = Def.ActorFrame{
-	InitCommand = function(s) s:draworder(100):xy(_screen.cx,SCREEN_TOP+68) end,
-	OnCommand = function(s) s:addy(-140):decelerate(0.18):addy(140) end,
-	OffCommand = function(s) s:linear(0.15):addy(-140) end,
-	loadfile(THEME:GetPathG("","ScreenWithMenuElements Header/header/default.lua"))().. {
-		InitCommand = function(s) s:valign(0) end,
-	};
-	Def.Sprite{
-		Texture=THEME:GetPathG("","ScreenWithMenuElements Header/text/mainmenu"),
-		InitCommand = function(s) s:y(10):diffusealpha(0) end, 
-		OnCommand=function(s) s:diffusealpha(0):sleep(0.25):linear(0.05):diffusealpha(0.5):linear(0.05):diffusealpha(0):linear(0.05):diffusealpha(1):linear(0.05):diffusealpha(0):linear(0.05):diffusealpha(0.5):decelerate(0.1):diffusealpha(1) end,
-		OffCommand = function(s) s:linear(0.05):diffusealpha(0) end,
-	};
-};
-
-t[#t+1] = Def.ActorFrame{
-	InitCommand = function(s) s:draworder(100):xy(_screen.cx,SCREEN_BOTTOM-68) end,
-	OnCommand = function(s) s:addy(140):decelerate(0.18):addy(-140) end,
-	OffCommand = function(s) s:linear(0.15):addy(140) end,
-	Def.Sprite{Texture=THEME:GetPathG("","ScreenWithMenuElements footer/base")};
-	Def.Sprite{Texture=THEME:GetPathG("","ScreenWithMenuElements footer/side glow"),
-		OnCommand=function(s) s:cropleft(0.5):cropright(0.5):sleep(0.3):decelerate(0.4):cropleft(0):cropright(0) end,
-	};
-	Def.Sprite{Texture=THEME:GetPathG("","ScreenWithMenuElements footer/text/welcome"),
-		InitCommand = function(s) s:y(24):diffusealpha(0) end,
-		OnCommand=function(s) s:diffusealpha(0):sleep(0.25):linear(0.05):diffusealpha(0.5):linear(0.05):diffusealpha(0):linear(0.05):diffusealpha(1):linear(0.05):diffusealpha(0):linear(0.05):diffusealpha(0.5):decelerate(0.1):diffusealpha(1) end,
-		OffCommand = function(s) s:linear(0.05):diffusealpha(0) end,
-	};
-	Def.ActorFrame{
-		OnCommand=function(s) s:diffusealpha(0):sleep(0.3):decelerate(0.5):diffusealpha(1) end,
-		Def.Sprite{Texture=THEME:GetPathG("ScreenWithMenuElements","footer/arrow"),
-		  InitCommand=function(s) s:xy(1,-36) end,
-		  OnCommand=function(s) s:addy(100):sleep(0.25):decelerate(0.4):addy(-100) end,
-		};
-	  };
-};
-
 if GAMESTATE:GetCoinMode() == 'CoinMode_Home' then
 --XXX: it's easier to have it up here
 
@@ -96,11 +59,12 @@ t[#t+1] = Def.ActorFrame {
 			Name="ImageLoader";
 			TitleSelectionMessageCommand=function(self, params)
 				choice = string.lower(params.Choice)
-				self:finishtweening()
+				self:stoptweening()
 				if heardBefore then
 					self:accelerate(0.1);
 				else heardBefore = true end
-				self:croptop(0.5):cropbottom(0.5):queuecommand("TitleSelectionPart2")
+				self:croptop(0.5):cropbottom(0.5)
+				self:queuecommand("TitleSelectionPart2")
 			end;
 			TitleSelectionPart2Command=function(self, params)
 				self:Load(THEME:GetPathG("","_TitleImages/"..choice))
@@ -147,6 +111,10 @@ t[#t+1] = Def.ActorFrame {
 			Text="";
 			InitCommand=function(self) self:hibernate(0.4):zoom(0.7):maxwidth(570):wrapwidthpixels(570):vertspacing(2) end;
 			TitleSelectionMessageCommand=function(self, params)
+				local text = THEME:GetString("ScreenTitleMenu","DescriptionFallback")
+				if THEME:HasString("ScreenTitleMenu","Description"..params.Choice) then
+					text = THEME:GetString("ScreenTitleMenu","Description"..params.Choice)
+				end
 				if params.Choice == "Exit" then
 					if Branding() == "ddr_" then
 						self:settext(THEME:GetString("ScreenTitleMenu","DescriptionExitDDR"))
@@ -154,7 +122,7 @@ t[#t+1] = Def.ActorFrame {
 						self:settext(THEME:GetString("ScreenTitleMenu","DescriptionExitProject"))
 					end
 				else
-					self:settext(THEME:GetString("ScreenTitleMenu","Description"..params.Choice))
+					self:settext(text)
 				end
 			end;
 			OnCommand=function(s) s:cropbottom(1):sleep(0.1):accelerate(0.3):cropbottom(0) end,
@@ -170,6 +138,9 @@ t[#t+1] = Def.ActorFrame {
 	InitCommand=function(s) s:halign(1):xy(SCREEN_RIGHT-10,SCREEN_TOP+90):diffusealpha(0):wrapwidthpixels(400) end,
 	OnCommand=function(s) s:sleep(0.3):decelerate(0.6):diffusealpha(0.5) end,
   };}
+
+t[#t+1] = StandardDecorationFromFileOptional("Header","Header");
+t[#t+1] = StandardDecorationFromFileOptional("Footer","Footer");
 
 t[#t+1] = Def.Actor{
 	CodeMessageCommand=function(s,p)

@@ -100,7 +100,7 @@ for _, pn in ipairs(GAMESTATE:GetEnabledPlayers()) do
 
 	t[#t+1] = Def.ActorFrame {
 		InitCommand=function(s) s:xy(X,_screen.cy):diffusealpha(0) end,
-		CurrentSongChangedMessageCommand=function(s) s:diffusealpha(0):sleep(BeginReadyDelay()+SongMeasureSec()):linear(0.2):diffusealpha(1) end,
+		CurrentSongChangedMessageCommand=function(s) s:diffusealpha(0):sleep(BeginReadyDelay()+SongMeasureSec()):linear(0.2):diffusealpha(1):queuecommand("ShowBars") end,
 		ChangeCourseSongInMessageCommand=function(s) s:playcommand('FilterOff') end,
 		OffCommand=function(s) s:playcommand('FilterOff') end,
 		FilterOffCommand=function(s)
@@ -138,7 +138,7 @@ for _, pn in ipairs(GAMESTATE:GetEnabledPlayers()) do
 				dif = 60/bpm*4*m*n/d
 			end
 			
-			s:sleep(dif):linear(0.2):diffusealpha(0)
+			s:sleep(dif):linear(0.2):diffusealpha(0):queuecommand("DisableBars")
 		end,
 		
 		Def.Quad {
@@ -172,8 +172,10 @@ for _, pn in ipairs(GAMESTATE:GetEnabledPlayers()) do
 				end
 			end,
 		};
+		--Is this hacky? Yes.
+		--Does it work? ...Unfortunately also yes.
 		Def.Actor{
-			OnCommand=function(self)
+			ShowBarsCommand=function(self)
 				local notefield = SCREENMAN:GetTopScreen():GetChild("Player"..ToEnumShortString(pn)):GetChild("NoteField")
 				local profileID = GetProfileIDForPlayer(pn)
 				local pPrefs = ProfilePrefs.Read(profileID)
@@ -182,6 +184,12 @@ for _, pn in ipairs(GAMESTATE:GetEnabledPlayers()) do
 					notefield:SetStopBars(true)
 					notefield:SetBpmBars(true)
 				end
+			end,
+			DisableBarsCommand=function(self)
+				local notefield = SCREENMAN:GetTopScreen():GetChild("Player"..ToEnumShortString(pn)):GetChild("NoteField")
+				notefield:SetBeatBars(false)
+				notefield:SetStopBars(false)
+				notefield:SetBpmBars(false)
 			end,
 		},
 		DS .. {
